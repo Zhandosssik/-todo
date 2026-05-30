@@ -25,6 +25,10 @@ export function setOnPlanReset(callback) {
 }
 
 async function resetAllProgress(reason) {
+  const today = todayStr();
+  const lastReset = await getSetting('lastPlanResetDate');
+  if (lastReset === today) return;
+
   await clearProgressData();
 
   const config = { ...useAlarmStore.getState().config, wakeStreak: 0, snoozeCount: 0 };
@@ -32,6 +36,8 @@ async function resetAllProgress(reason) {
   useAlarmStore.setState({ config });
 
   useGoalProgressStore.setState({ logsByGoal: {} });
+  await setSetting('lastPlanResetDate', today);
+  await setSetting('planResetNoticeAckDate', null);
 
   if (onResetCallback) onResetCallback(reason);
 }
@@ -57,7 +63,7 @@ async function runDeadlineCheck() {
     }
   }
 
-  if (isPastDeadline(deadline, today)) {
+  if (isPastDeadline(deadline, today) && lastCheck !== today) {
     const complete = areAllGoalsCompleteForDate(goals, logsByGoal, today);
     if (!complete) {
       await resetAllProgress('deadline_missed');
@@ -128,6 +134,7 @@ export async function checkMissedDaysOnStartup() {
     const missedYesterday = !areAllGoalsCompleteForDate(goals, logsByGoal, yesterday);
     if (missedYesterday && isPastDeadline(deadline, yesterday)) {
       await resetAllProgress('deadline_missed');
+      await setSetting('lastDeadlineCheckDate', today);
     }
   }
 
