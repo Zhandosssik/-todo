@@ -107,6 +107,59 @@ export async function requestNotificationPermission() {
   return result === 'granted';
 }
 
+/** iOS: вызывать синхронно из onClick, до любых await */
+export function requestNotificationPermissionSync() {
+  if (!('Notification' in window)) {
+    return Promise.resolve('unsupported');
+  }
+  if (Notification.permission === 'granted') {
+    return Promise.resolve('granted');
+  }
+  if (Notification.permission === 'denied') {
+    return Promise.resolve('denied');
+  }
+  return Notification.requestPermission();
+}
+
+export function isStandalonePwa() {
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true
+  );
+}
+
+export function isIos() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+export function getNotificationStatus() {
+  if (!('Notification' in window)) {
+    return { supported: false, permission: 'unsupported', standalone: isStandalonePwa() };
+  }
+  return {
+    supported: true,
+    permission: Notification.permission,
+    standalone: isStandalonePwa(),
+    ios: isIos(),
+  };
+}
+
+export async function enableNotifications() {
+  const granted = await requestNotificationPermissionSync();
+  if (granted === 'granted') {
+    startNotificationScheduler();
+    await scheduleDailyRegeneration();
+    showNotification({
+      id: 'test',
+      goalId: 'test',
+      message: 'Уведомления включены. GoalAlarm будет напоминать о целях.',
+    });
+    return 'granted';
+  }
+  return granted;
+}
+
 export async function scheduleDailyRegeneration() {
   const lastGen = localStorage.getItem('lastNotificationGen');
   const today = new Date().toISOString().split('T')[0];

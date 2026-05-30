@@ -4,7 +4,6 @@ import { useNotificationStore } from '../store/notificationStore';
 import { useAlarmStore } from '../store/alarmStore';
 import { generateNotifications, generateWakeUpMessages } from '../services/aiNotifications';
 import {
-  requestNotificationPermission,
   startNotificationScheduler,
   scheduleDailyRegeneration,
 } from '../services/notificationScheduler';
@@ -44,9 +43,10 @@ export default function Onboarding({ onDone }) {
     const morningMsg = await generateWakeUpMessages(savedGoals, savedDreams, 12);
     await setWakeMessages(morningMsg);
 
-    await requestNotificationPermission();
-    startNotificationScheduler();
-    scheduleDailyRegeneration();
+    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+      startNotificationScheduler();
+      scheduleDailyRegeneration();
+    }
 
     onDone();
   };

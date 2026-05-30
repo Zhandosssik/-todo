@@ -39,6 +39,11 @@ export default function PlanResetNotice() {
     setVisible(false);
   };
 
+  const handleDismissTouch = (e) => {
+    e.preventDefault();
+    handleDismiss();
+  };
+
   if (!visible) return null;
 
   return createPortal(
@@ -61,7 +66,11 @@ export default function PlanResetNotice() {
           Ты не выполнил весь план до дедлайна. Серия и весь накопленный прогресс сброшены.
           Начни заново сегодня.
         </p>
-        <Button className="w-full touch-manipulation" onClick={handleDismiss}>
+        <Button
+          className="w-full touch-manipulation"
+          onClick={handleDismiss}
+          onTouchEnd={handleDismissTouch}
+        >
           Понятно
         </Button>
       </div>

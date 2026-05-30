@@ -53,10 +53,22 @@ export default function OnboardingFlow({ onComplete }) {
     setStep(2);
   };
 
-  const handleComplete = async () => {
+  const handleComplete = () => {
     setLoading(true);
-    await onComplete(normalizeGoals(goals), dreams, dailyDeadline);
-    setLoading(false);
+
+    // iOS: запрос разрешения только в момент нажатия, до await
+    const permissionPromise =
+      typeof Notification !== 'undefined' && Notification.permission === 'default'
+        ? Notification.requestPermission()
+        : Promise.resolve(
+            typeof Notification !== 'undefined' ? Notification.permission : 'denied'
+          );
+
+    permissionPromise
+      .then(async () => {
+        await onComplete(normalizeGoals(goals), dreams, dailyDeadline);
+      })
+      .finally(() => setLoading(false));
   };
 
   if (step === 0) {

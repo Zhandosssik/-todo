@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import AlarmSetup from '../components/Alarm/AlarmSetup';
+import NotificationSettings from '../components/Settings/NotificationSettings';
 import GoalCard from '../components/Onboarding/GoalCard';
 import Button from '../components/shared/Button';
 import { useGoalsStore } from '../store/goalsStore';
@@ -28,6 +29,8 @@ export default function Settings() {
       <h1 className="font-display text-4xl tracking-wide">Настройки</h1>
 
       <AlarmSetup />
+
+      <NotificationSettings />
 
       {planLocked && (
         <section className="bg-bg-card border border-border rounded-2xl p-4">
