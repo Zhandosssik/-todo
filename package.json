@@ -1,0 +1,32 @@
+{
+  "name": "goal-alarm",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:all": "concurrently -n server,web -c blue,green \"npm run server\" \"npm run dev\"",
+    "build": "node scripts/generate-icons.cjs && vite build",
+    "preview": "vite preview",
+    "server": "node --env-file=.env server/index.js",
+    "postinstall": "node scripts/generate-icons.cjs && npm install --prefix server"
+  },
+  "dependencies": {
+    "idb": "^8.0.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.2",
+    "uuid": "^11.1.0",
+    "workbox-window": "^7.3.0",
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.5.2",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.1",
+    "postcss": "^8.5.4",
+    "tailwindcss": "^3.4.17",
+    "vite": "^6.3.5",
+    "vite-plugin-pwa": "^1.0.0"
+  }
+}

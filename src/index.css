@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #080808;
+  --bg-card: #111111;
+  --accent: #ff4d00;
+  --accent-success: #00ff88;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --border: #1f1f1f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+#root {
+  max-width: 390px;
+  margin: 0 auto;
+  min-height: 100%;
+  position: relative;
+}
+
+@layer utilities {
+  .screen-transition {
+    @apply transition-all duration-screen ease-out;
+  }
+
+  .alarm-pulse {
+    animation: alarm-bg-pulse 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes alarm-bg-pulse {
+  0%, 100% {
+    background-color: #080808;
+  }
+  50% {
+    background-color: #1a0800;
+  }
+}
