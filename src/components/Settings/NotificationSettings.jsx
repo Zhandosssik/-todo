@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Button from './Button';
+import Button from '../shared/Button';
 import {
   enableNotifications,
   getNotificationStatus,
